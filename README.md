@@ -1,23 +1,70 @@
 # go-workers
 
-Este projeto implementa um servidor master que gerencia workers para executar tarefas recebidas de clientes.  
-As conexões são reconhecidas como “workers” ou “clientes” e processadas conforme suas funções.
+Este projeto implementa um servidor master em Go, responsável por gerenciar workers e distribuir tarefas para processamento. O sistema simula falhas de execução nos workers e reatribui as tarefas automaticamente em caso de falha, proporcionando resiliência e desempenho distribuído.
 
-## Visão Geral
-- O servidor fica escutando na porta `:12345`.
-- Clientes podem enviar tarefas de forma contínua, até enviarem `bye`.
-- Workers ficam persistentes esperando tarefas, respondendo o resultado ou “fail”.
+
+## Funcionalidades
+
+- **Servidor Master**: Gerencia workers e clientes, distribuindo tarefas.
+- **Workers**: Processam tarefas com 20% de chance de falha simulada.
+- **Cliente Interativo**: Envia tarefas via linha de comando.
+- **Reatribuição de Tarefas**: Falhas resultam em nova atribuição automática.
+- **Timeout**: 10 segundos para resposta dos workers.
+
+
+
+## Estrutura do Projeto
+
+- `client/`: Contém o código do cliente interativo que envia as tarefas.
+  - `client.go`: Implementação do cliente.
+- `worker/`: Contém o código do worker que processa as tarefas.
+  - `worker.go`: Implementação do worker.
+- `go.mod/`: Arquivo de gerenciamento de dependências do Go.
+- `go.sum/`: Arquivo de checksum para garantir a integridade das dependências.
+- `main.go`: Ponto de entrada principal do servidor master.
 
 ## Execução
-1. Compile o projeto com `go build`.
-2. Inicie o servidor:  
-   ```
-   .\go-workers.exe
-   ```
-3. Conecte-se como worker ou cliente (ex: via telnet ou netcat).
 
-## Estrutura
-- `main.go`: Lógica principal do servidor, incluindo registro de workers, enfileiramento de tarefas e gestão de conexões.
+Siga os passos abaixo para executar o servidor, o worker e o cliente:
+
+1. **Abra 3 terminais** (T1, T2, T3).
+2. **Inicie o servidor (T1)**:
+   No terminal T1, execute o comando abaixo para iniciar o servidor master:
+   ```bash
+   go run main.go
+   ```
+3. **Inicie o Worker (T2)**
+  No terminal T2, execute o comando abaixo para iniciar o worker:
+   ```bash
+   go run ./worker/worker.go
+   ```
+4. **Inicie o Cliente (T3)**
+  No terminal T3, execute o comando abaixo para iniciar o cliente interativo:
+  No terminal T2, execute o comando abaixo para iniciar o worker:
+   ```bash
+   go run ./client/client.go
+   ```
+5. **Teste o cliente (T3)**
+   - No Terminal T3, inicie o cliente e digite a tarefa a ser processada:
+      ```bash
+      Digite a tarefa a ser processada (ou 'bye' para sair): tarefa_teste
+      Resultado recebido: resultado do 'tarefa_teste' processado
+      ```
+
+    - No Terminal T1 (Logs do Servidor Master), o servidor master receberá a tarefa e a atribuirá a um worker:
+      ```bash
+      025/03/15 09:46:35 Tarefa recebida do cliente 127.0.0.1:55345: tarefa_teste
+      2025/03/15 09:46:35 Atribuindo tarefa 'tarefa_teste' ao worker 127.0.0.1:55342
+      ```
+
+    - No Terminal T2 (Logs do Worker), o worker receberá e processará a tarefa::
+      ```bash
+      2025/03/15 09:46:35 Tarefa recebida: tarefa_teste
+      2025/03/15 09:46:38 Tarefa concluída: resultado do 'tarefa_teste' processado
+      ```   
+
+###### Dica
+>Você pode abrir mais de um worker, se desejar, para aumentar a capacidade de processamento do servidor.
 
 ## 🤝 Colaboradores
 
@@ -26,62 +73,38 @@ Agradecemos às seguintes pessoas que contribuíram para este projeto:
 <table>
   <tr>
     <td align="center">
-      <a href="#">
-        <a href="https://github.com/YuriGarciaRibeiro">
-          <img src="https://avatars.githubusercontent.com/u/81641949?v=4" width="100px;" alt="Foto do Brenno Oliveira no GitHub"/><br>
-        </a>
-        <br>
-        <sub>
-          <b>Yuri Garcia</b>
-        </sub>
+      <a href="https://github.com/YuriGarciaRibeiro">
+        <img src="https://avatars.githubusercontent.com/u/81641949?v=4" width="100px;" alt="Yuri Garcia"/><br>
+        <sub><b>Yuri Garcia</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="#">
-        <a href="https://github.com/George-b1t">
-          <img src="https://avatars.githubusercontent.com/u/67129166?v=4" width="100px;" alt="Foto do Brenno Oliveira no GitHub"/><br>
-        </a>
-        <br>
-        <sub>
-          <b>George Soares</b>
-        </sub>
+      <a href="https://github.com/George-b1t">
+        <img src="https://avatars.githubusercontent.com/u/67129166?v=4" width="100px;" alt="George Soares"/><br>
+        <sub><b>George Soares</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="#">
-        <a href="https://github.com/MaykeESA">
-          <img src="https://avatars.githubusercontent.com/u/81484737?v=4" width="100px;" alt="Foto do Mayke Erick no GitHub"/><br>
-        </a>
-        <br>
-        <sub>
-          <b>Mayke Erick</b>
-        </sub>
+      <a href="https://github.com/MaykeESA">
+        <img src="https://avatars.githubusercontent.com/u/81484737?v=4" width="100px;" alt="Mayke Erick"/><br>
+        <sub><b>Mayke Erick</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="#">
-        <a href="https://github.com/GugaAAndrade">
-          <img src="https://avatars.githubusercontent.com/u/105755546?v=4v=4" width="100px;" alt="Foto do Brenno Oliveira no GitHub"/><br>
-        </a>
-        <br>
-        <sub>
-          <b>Gustavo Andrade</b>
-        </sub>
+      <a href="https://github.com/GugaAAndrade">
+        <img src="https://avatars.githubusercontent.com/u/105755546?v=4" width="100px;" alt="Gustavo Andrade"/><br>
+        <sub><b>Gustavo Andrade</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="#">
-        <a href="https://github.com/jmcanario1">
-          <img src="https://avatars.githubusercontent.com/u/79545726?v=4" width="100px;" alt="Foto do Brenno Oliveira no GitHub"/><br>
-        </a>
-        <br>
-        <sub>
-          <b>João Marcelo</b>
-        </sub>
+      <a href="https://github.com/jmcanario1">
+        <img src="https://avatars.githubusercontent.com/u/79545726?v=4" width="100px;" alt="João Marcelo"/><br>
+        <sub><b>João Marcelo</b></sub>
       </a>
     </td>
   </tr>
 </table>
+
 
 ## Licença
 Distribuído sob licença MIT.
