@@ -1,4 +1,4 @@
-package main
+package worker
 
 import (
 	"bufio"
@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"math/rand"
-	"net"
 	"strings"
 	"time"
 )
@@ -55,7 +54,7 @@ func (w *Worker) Start() error {
 				return nil
 			}
 			return fmt.Errorf("erro ao ler tarefa: %w", err)
-		}	
+		}
 
 		result, err := ProcessTask(task)
 		if err != nil {
@@ -63,21 +62,7 @@ func (w *Worker) Start() error {
 			fmt.Fprintln(w.conn, "fail")
 		} else {
 			log.Println("Tarefa concluída:", result)
-			fmt.Fprintln(w.conn, result)	
+			fmt.Fprintln(w.conn, result)
 		}
-	}
-}
-
-func main() {
-	conn, err := net.Dial("tcp", "localhost:12345")
-	if err != nil {
-		log.Fatal("Erro ao conectar ao master:", err)
-	}
-	defer conn.Close()
-
-	log.Println("Conectado ao master como worker")
-	worker := NewWorker(conn)
-	if err := worker.Start(); err != nil {
-		log.Fatal(err)
 	}
 }

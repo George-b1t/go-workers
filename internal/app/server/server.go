@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"bufio"
@@ -155,9 +155,4 @@ func (s *Server) assignTask(task string) string {
 	}
 }
 
-func main() {
-	server := NewServer(100)
-	if err := server.Start(":12345"); err != nil {
-		log.Fatal(err)
-	}
-}
+
