@@ -15,13 +15,26 @@ Este projeto implementa um servidor master em Go, responsável por gerenciar wor
 
 ## Estrutura do Projeto
 
-- `client/`: Contém o código do cliente interativo que envia as tarefas.
-  - `client.go`: Implementação do cliente.
-- `worker/`: Contém o código do worker que processa as tarefas.
-  - `worker.go`: Implementação do worker.
+- `internal/`: Contém o código do cliente interativo que envia as tarefas.
+    - `app/`
+      - `client/`: Codigos refernte ao cliente.
+        - `client.go` : Implementação do client
+      - `worker/`: Codigos refernte ao worker.
+        - `worker.go` : Implementação do worker
+      - `server/`: Codigos refernte ao server.
+        - `server.go` : Implementação do server
+
+- `cmd/`
+  - `client/`: Codigos refernte ao cliente.
+    - `main.go` : Entrypoint do client
+  - `worker/`: Codigos refernte ao worker.
+    - `main.go` : Entrypoint do worker
+  - `server/`: Codigos refernte ao server.
+    - `main.go` : Entrypoint do server
+
 - `go.mod/`: Arquivo de gerenciamento de dependências do Go.
 - `go.sum/`: Arquivo de checksum para garantir a integridade das dependências.
-- `main.go`: Ponto de entrada principal do servidor master.
+
 
 ## Execução
 
@@ -31,18 +44,17 @@ Siga os passos abaixo para executar o servidor, o worker e o cliente:
 2. **Inicie o servidor (T1)**:
    No terminal T1, execute o comando abaixo para iniciar o servidor master:
    ```bash
-   go run main.go
+   go run cmd/server/main.go
    ```
 3. **Inicie o Worker (T2)**
   No terminal T2, execute o comando abaixo para iniciar o worker:
    ```bash
-   go run ./worker/worker.go
+   go run cmd/worker/main.go
    ```
 4. **Inicie o Cliente (T3)**
   No terminal T3, execute o comando abaixo para iniciar o cliente interativo:
-  No terminal T2, execute o comando abaixo para iniciar o worker:
    ```bash
-   go run ./client/client.go
+   go run cmd/worker/main.go
    ```
 5. **Teste o cliente (T3)**
    - No Terminal T3, inicie o cliente e digite a tarefa a ser processada:
