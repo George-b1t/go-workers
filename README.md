@@ -17,19 +17,19 @@ Este projeto implementa um servidor master em Go, responsável por gerenciar wor
 
 - `internal/`: Contém o código do cliente interativo que envia as tarefas.
     - `app/`
-      - `client/`: Codigos refernte ao cliente.
+      - `client/`: Códigos referentes ao cliente.
         - `client.go` : Implementação do client
-      - `worker/`: Codigos refernte ao worker.
+      - `worker/`: Códigos referentes ao worker.
         - `worker.go` : Implementação do worker
-      - `server/`: Codigos refernte ao server.
+      - `server/`: Códigos referentes ao server.
         - `server.go` : Implementação do server
 
 - `cmd/`
-  - `client/`: Codigos refernte ao cliente.
+  - `client/`: Códigos referentes ao cliente.
     - `main.go` : Entrypoint do client
-  - `worker/`: Codigos refernte ao worker.
+  - `worker/`: Códigos referentes ao worker.
     - `main.go` : Entrypoint do worker
-  - `server/`: Codigos refernte ao server.
+  - `server/`: Códigos referentes ao server.
     - `main.go` : Entrypoint do server
 
 - `go.mod/`: Arquivo de gerenciamento de dependências do Go.
@@ -54,7 +54,7 @@ Siga os passos abaixo para executar o servidor, o worker e o cliente:
 4. **Inicie o Cliente (T3)**
   No terminal T3, execute o comando abaixo para iniciar o cliente interativo:
    ```bash
-   go run cmd/worker/main.go
+   go run cmd/client/main.go
    ```
 5. **Teste o cliente (T3)**
    - No Terminal T3, inicie o cliente e digite a tarefa a ser processada:
