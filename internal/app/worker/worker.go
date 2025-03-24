@@ -27,14 +27,35 @@ func ProcessTask(task string) (string, error) {
 		return "", fmt.Errorf("tarefa vazia")
 	}
 
+	
+	parts := strings.Split(task, ":")
+	
+	if len(parts) != 2 {
+		fmt.Println("Formato inválido")
+		return "", fmt.Errorf("formato inválido")
+	}
+	
+	tarefa := parts[0]
+	texto := parts[1]
+	
+	if _, ok := Tasks[tarefa]; !ok {
+		fmt.Println("Tarefa não encontrada")
+		return "", fmt.Errorf("tarefa não encontrada")
+	}
+
 	processingTime := time.Duration(rand.Intn(3)+1) * time.Second
 	time.Sleep(processingTime)
+	
+	result, err := Tasks[tarefa](texto)
+	if err != nil {
+		return "", fmt.Errorf("falha ao processar tarefa: %w", err)
+	}
 
 	if rand.Float32() < 0.2 {
 		return "", fmt.Errorf("falha no processamento")
 	}
 
-	return fmt.Sprintf("resultado do '%s' processado", task), nil
+	return result, nil
 }
 
 // Start inicia o loop de recebimento e processamento de tarefas.
@@ -57,6 +78,7 @@ func (w *Worker) Start() error {
 		}
 
 		result, err := ProcessTask(task)
+
 		if err != nil {
 			log.Println("Falha ao processar tarefa:", err)
 			fmt.Fprintln(w.conn, "fail")

@@ -3,6 +3,7 @@ package client
 import (
 	"bufio"
 	"fmt"
+	"go-threads/internal/app/worker"
 	"log"
 	"net"
 	"os"
@@ -48,7 +49,13 @@ func (c *Client) Start() {
 	log.Println("Conectado ao servidor master")
 
 	for {
-		fmt.Print("Digite a tarefa a ser processada (ou 'bye' para sair): ")
+		
+
+		fmt.Println("Digite a tarefa a ser processada + variavel (ou 'bye' para sair): ")
+		fmt.Println("Exemplo: uppercase:ola")
+		for key := range worker.Tasks {
+			fmt.Println("-", key)
+		}
 		task, err := c.inputReader.ReadString('\n')
 		if err != nil {
 			log.Fatalf("Erro ao ler entrada: %v", err)
@@ -63,6 +70,9 @@ func (c *Client) Start() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		//limpa o terminal
+		fmt.Print("\033[H\033[2J")
 		
 		fmt.Printf("Resultado recebido: %s\n", result)
 		
