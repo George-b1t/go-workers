@@ -59,8 +59,8 @@ Siga os passos abaixo para executar o servidor, o worker e o cliente:
 5. **Teste o cliente (T3)**
    - No Terminal T3, inicie o cliente e digite a tarefa a ser processada:
       ```bash
-      Digite a tarefa a ser processada (ou 'bye' para sair): tarefa_teste
-      Resultado recebido: resultado do 'tarefa_teste' processado
+      Digite a tarefa a ser processada (ou 'bye' para sair): reverse:123
+      Resultado recebido: resultado do 'tarefa_teste' processado : 321
       ```
 
     - No Terminal T1 (Logs do Servidor Master), o servidor master receberá a tarefa e a atribuirá a um worker:
