@@ -30,16 +30,16 @@ func (c *Client) Connect(address string) error {
 	if err != nil {
 		return fmt.Errorf("erro ao conectar ao servidor: %w", err)
 	}
-	
+
 	c.conn = conn
 	c.serverReader = bufio.NewReader(conn)
-	
+
 	// Envia identificação como cliente
 	if _, err := fmt.Fprintln(conn, "client"); err != nil {
 		conn.Close()
 		return fmt.Errorf("erro ao se identificar como cliente: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -49,8 +49,6 @@ func (c *Client) Start() {
 	log.Println("Conectado ao servidor master")
 
 	for {
-		
-
 		fmt.Println("Digite a tarefa a ser processada + variavel (ou 'bye' para sair): ")
 		fmt.Println("Exemplo: uppercase:ola")
 		for key := range worker.Tasks {
@@ -60,12 +58,29 @@ func (c *Client) Start() {
 		if err != nil {
 			log.Fatalf("Erro ao ler entrada: %v", err)
 		}
-		
+
+		// split task
+		parts := strings.Split(task, ":")
+
+		if len(parts) != 2 {
+			fmt.Print("\033[H\033[2J")
+			fmt.Println("Formato inválido")
+			continue
+		}
+
+		tarefa := parts[0]
+
+		if _, ok := worker.Tasks[tarefa]; !ok {
+			fmt.Print("\033[H\033[2J")
+			fmt.Println("Tarefa não encontrada")
+			continue
+		}
+
 		task = strings.TrimSpace(task)
 		if err := c.sendTask(task); err != nil {
 			log.Fatal(err)
 		}
-		
+
 		result, err := c.receiveResult()
 		if err != nil {
 			log.Fatal(err)
@@ -73,14 +88,14 @@ func (c *Client) Start() {
 
 		//limpa o terminal
 		fmt.Print("\033[H\033[2J")
-		
+
 		fmt.Printf("Resultado recebido: %s\n", result)
-		
+
 		if strings.EqualFold(task, "bye") {
 			break
 		}
 	}
-	
+
 	fmt.Println("Conexão encerrada")
 }
 
