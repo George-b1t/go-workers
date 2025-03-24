@@ -77,11 +77,11 @@ func (c *Client) Start() {
 		}
 
 		task = strings.TrimSpace(task)
-		if err := c.sendTask(task); err != nil {
+		if err := c.SendTask(task); err != nil {
 			log.Fatal(err)
 		}
 
-		result, err := c.receiveResult()
+		result, err := c.ReceiveResult()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -100,7 +100,7 @@ func (c *Client) Start() {
 }
 
 // sendTask envia uma tarefa para o servidor.
-func (c *Client) sendTask(task string) error {
+func (c *Client) SendTask(task string) error {
 	if _, err := fmt.Fprintln(c.conn, task); err != nil {
 		return fmt.Errorf("erro ao enviar tarefa: %w", err)
 	}
@@ -108,7 +108,7 @@ func (c *Client) sendTask(task string) error {
 }
 
 // receiveResult recebe o resultado do processamento do servidor.
-func (c *Client) receiveResult() (string, error) {
+func (c *Client) ReceiveResult() (string, error) {
 	result, err := c.serverReader.ReadString('\n')
 	if err != nil {
 		return "", fmt.Errorf("erro ao ler resposta: %w", err)
