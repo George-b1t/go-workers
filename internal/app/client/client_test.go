@@ -8,7 +8,10 @@ import (
 	"time"
 )
 
+// Sobrescreve temporariamente a função dial para testes
 var dial = net.Dial
+
+// mockConn simula uma conexão de rede para testes
 
 type mockConn struct {
 	readBuffer  *strings.Reader
@@ -47,6 +50,7 @@ func (m *mockConn) SetWriteDeadline(t time.Time) error {
 	return nil
 }
 
+// TestNewClient verifica se NewClient retorna uma instância válida
 func TestNewClient(t *testing.T) {
 	client := NewClient()
 	if client == nil {
@@ -57,8 +61,8 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
+// TestConnect testa se o cliente conecta corretamente a um servidor mockado
 func TestConnect(t *testing.T) {
-
 	listener, err := net.Listen("tcp", ":12345")
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
@@ -89,6 +93,7 @@ func TestConnect(t *testing.T) {
 	}
 }
 
+// TestSendTask verifica se uma tarefa é corretamente enviada para a conexão
 func TestSendTask(t *testing.T) {
 	mock := &mockConn{
 		readBuffer:  strings.NewReader(""),
@@ -109,6 +114,7 @@ func TestSendTask(t *testing.T) {
 	}
 }
 
+// TestReceiveResult testa se o cliente consegue receber a resposta corretamente
 func TestReceiveResult(t *testing.T) {
 	expectedResult := "HELLO"
 	mock := &mockConn{

@@ -10,18 +10,22 @@ import (
 	"strings"
 )
 
+// Client representa um cliente que se conecta ao servidor
+
 type Client struct {
 	conn         net.Conn
 	serverReader *bufio.Reader
 	inputReader  *bufio.Reader
 }
 
+// NewClient inicializa um novo cliente com leitor para entrada padrão
 func NewClient() *Client {
 	return &Client{
 		inputReader: bufio.NewReader(os.Stdin),
 	}
 }
 
+// Connect conecta o cliente ao servidor usando o endereço fornecido
 func (c *Client) Connect(address string) error {
 	conn, err := net.Dial("tcp", address)
 	if err != nil {
@@ -31,6 +35,7 @@ func (c *Client) Connect(address string) error {
 	c.conn = conn
 	c.serverReader = bufio.NewReader(conn)
 
+	// Envia identificação ao servidor
 	if _, err := fmt.Fprintln(conn, "client"); err != nil {
 		conn.Close()
 		return fmt.Errorf("erro ao se identificar como cliente: %w", err)
@@ -39,6 +44,7 @@ func (c *Client) Connect(address string) error {
 	return nil
 }
 
+// Start inicia a interação do cliente com o servidor
 func (c *Client) Start() {
 	defer c.conn.Close()
 	log.Println("Conectado ao servidor master")
@@ -55,7 +61,6 @@ func (c *Client) Start() {
 		}
 
 		parts := strings.Split(task, ":")
-
 		if len(parts) != 2 {
 			fmt.Print("\033[H\033[2J")
 			fmt.Println("Formato inválido")
@@ -63,7 +68,6 @@ func (c *Client) Start() {
 		}
 
 		tarefa := parts[0]
-
 		if _, ok := worker.Tasks[tarefa]; !ok {
 			fmt.Print("\033[H\033[2J")
 			fmt.Println("Tarefa não encontrada")
@@ -81,7 +85,6 @@ func (c *Client) Start() {
 		}
 
 		fmt.Print("\033[H\033[2J")
-
 		fmt.Printf("Resultado recebido: %s\n", result)
 
 		if strings.EqualFold(task, "bye") {
@@ -92,6 +95,7 @@ func (c *Client) Start() {
 	fmt.Println("Conexão encerrada")
 }
 
+// SendTask envia uma tarefa ao servidor
 func (c *Client) SendTask(task string) error {
 	if _, err := fmt.Fprintln(c.conn, task); err != nil {
 		return fmt.Errorf("erro ao enviar tarefa: %w", err)
@@ -99,6 +103,7 @@ func (c *Client) SendTask(task string) error {
 	return nil
 }
 
+// ReceiveResult recebe o resultado processado do servidor
 func (c *Client) ReceiveResult() (string, error) {
 	result, err := c.serverReader.ReadString('\n')
 	if err != nil {

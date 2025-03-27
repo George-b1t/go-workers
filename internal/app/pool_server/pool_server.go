@@ -8,15 +8,18 @@ import (
 	"strings"
 )
 
+// Task representa uma tarefa com um canal para o resultado
 type Task struct {
 	Job        string
 	ResultChan chan string
 }
 
+// ServerPool gerencia a pool de workers e tarefas
 type ServerPool struct {
 	tasks chan Task
 }
 
+// NewServerPool cria uma nova pool de workers com tamanho específico
 func NewServerPool(poolSize, bufferSize int) *ServerPool {
 	sp := &ServerPool{
 		tasks: make(chan Task, bufferSize),
@@ -29,6 +32,7 @@ func NewServerPool(poolSize, bufferSize int) *ServerPool {
 	return sp
 }
 
+// worker é a função executada por cada worker que processa tarefas
 func (sp *ServerPool) worker(workerID int) {
 	for t := range sp.tasks {
 		result, err := ProcessTask(t.Job)
@@ -40,6 +44,7 @@ func (sp *ServerPool) worker(workerID int) {
 	}
 }
 
+// Start inicia o servidor e escuta conexões na porta informada
 func (sp *ServerPool) Start(port string) error {
 	listener, err := net.Listen("tcp", port)
 	if err != nil {
@@ -58,6 +63,7 @@ func (sp *ServerPool) Start(port string) error {
 	}
 }
 
+// handleClient gerencia as interações com cada cliente conectado
 func (sp *ServerPool) handleClient(conn net.Conn) {
 	defer conn.Close()
 
@@ -86,6 +92,7 @@ func (sp *ServerPool) handleClient(conn net.Conn) {
 			return
 		}
 
+		// Cria uma tarefa e espera pelo resultado do worker
 		resultChan := make(chan string)
 		sp.tasks <- Task{
 			Job:        taskMsg,

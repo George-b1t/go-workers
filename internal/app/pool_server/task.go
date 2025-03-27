@@ -7,12 +7,14 @@ import (
 	"time"
 )
 
+// ProcessTask processa uma tarefa específica e retorna o resultado
 func ProcessTask(task string) (string, error) {
 	task = strings.TrimSpace(task)
 	if task == "" {
 		return "", fmt.Errorf("tarefa vazia")
 	}
 
+	// Divide o comando e o texto da tarefa
 	parts := strings.Split(task, ":")
 	if len(parts) != 2 {
 		return "", fmt.Errorf("formato inválido, use algo como uppercase:ola")
@@ -21,8 +23,10 @@ func ProcessTask(task string) (string, error) {
 	command := parts[0]
 	text := parts[1]
 
+	// Simula um processamento com duração aleatória entre 10 e 12 segundos
 	time.Sleep(time.Duration(rand.Intn(3)+10) * time.Second)
 
+	// Executa o comando solicitado
 	switch command {
 	case "uppercase":
 		return strings.ToUpper(text), nil
@@ -41,6 +45,7 @@ func ProcessTask(task string) (string, error) {
 	}
 }
 
+// caesarCipher aplica uma cifra de César simples deslocando caracteres em 3 posições
 func caesarCipher(text string) string {
 	result := []rune(text)
 	for i, char := range result {
