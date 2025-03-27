@@ -27,25 +27,24 @@ func ProcessTask(task string) (string, error) {
 		return "", fmt.Errorf("tarefa vazia")
 	}
 
-	
 	parts := strings.Split(task, ":")
-	
+
 	if len(parts) != 2 {
 		fmt.Println("Formato inválido")
 		return "", fmt.Errorf("formato inválido")
 	}
-	
+
 	tarefa := parts[0]
 	texto := parts[1]
-	
+
 	if _, ok := Tasks[tarefa]; !ok {
 		fmt.Println("Tarefa não encontrada")
 		return "", fmt.Errorf("tarefa não encontrada")
 	}
 
-	processingTime := time.Duration(rand.Intn(3)+1) * time.Second
+	processingTime := time.Duration(rand.Intn(3)+10) * time.Second
 	time.Sleep(processingTime)
-	
+
 	result, err := Tasks[tarefa](texto)
 	if err != nil {
 		return "", fmt.Errorf("falha ao processar tarefa: %w", err)

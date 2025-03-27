@@ -10,21 +10,18 @@ import (
 	"strings"
 )
 
-// Client representa um cliente conectado ao servidor master.
 type Client struct {
 	conn         net.Conn
 	serverReader *bufio.Reader
 	inputReader  *bufio.Reader
 }
 
-// NewClient cria uma nova instância de Client.
 func NewClient() *Client {
 	return &Client{
 		inputReader: bufio.NewReader(os.Stdin),
 	}
 }
 
-// Connect estabelece conexão com o servidor master e se identifica como cliente.
 func (c *Client) Connect(address string) error {
 	conn, err := net.Dial("tcp", address)
 	if err != nil {
@@ -34,7 +31,6 @@ func (c *Client) Connect(address string) error {
 	c.conn = conn
 	c.serverReader = bufio.NewReader(conn)
 
-	// Envia identificação como cliente
 	if _, err := fmt.Fprintln(conn, "client"); err != nil {
 		conn.Close()
 		return fmt.Errorf("erro ao se identificar como cliente: %w", err)
@@ -43,7 +39,6 @@ func (c *Client) Connect(address string) error {
 	return nil
 }
 
-// Start inicia o loop de interação com o usuário.
 func (c *Client) Start() {
 	defer c.conn.Close()
 	log.Println("Conectado ao servidor master")
@@ -59,7 +54,6 @@ func (c *Client) Start() {
 			log.Fatalf("Erro ao ler entrada: %v", err)
 		}
 
-		// split task
 		parts := strings.Split(task, ":")
 
 		if len(parts) != 2 {
@@ -86,7 +80,6 @@ func (c *Client) Start() {
 			log.Fatal(err)
 		}
 
-		//limpa o terminal
 		fmt.Print("\033[H\033[2J")
 
 		fmt.Printf("Resultado recebido: %s\n", result)
@@ -99,7 +92,6 @@ func (c *Client) Start() {
 	fmt.Println("Conexão encerrada")
 }
 
-// sendTask envia uma tarefa para o servidor.
 func (c *Client) SendTask(task string) error {
 	if _, err := fmt.Fprintln(c.conn, task); err != nil {
 		return fmt.Errorf("erro ao enviar tarefa: %w", err)
@@ -107,7 +99,6 @@ func (c *Client) SendTask(task string) error {
 	return nil
 }
 
-// receiveResult recebe o resultado do processamento do servidor.
 func (c *Client) ReceiveResult() (string, error) {
 	result, err := c.serverReader.ReadString('\n')
 	if err != nil {
